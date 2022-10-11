@@ -2,7 +2,7 @@
 
 //});
 
-const Button = (props) => {
+const LoginInput = (props) => {
     return (
         <div>
             <label>
@@ -13,4 +13,4 @@ const Button = (props) => {
     );
 };
 
-export default Button;
+export default LoginInput;

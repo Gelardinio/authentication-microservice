@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Button from './Components/logincInput';
+import LoginInput from './Components/logincInput';
+import GetTiming from './Functions/keystrokeTiming';
+import SubmitButton from './Components/submitButton';
 
 function App() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  //Need to fix rerender issues with onChange
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <Button placeHolder="Username"  onChange={e => setUsername(e.target.value)}/>
-        <Button placeHolder="Password"  onChange={e => setPassword(e.target.value)}/>
+        <LoginInput placeholder="Username"  onChange={GetTiming(setUsername)}/>
+        <LoginInput placeholder="Password"/>
+        <SubmitButton/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
