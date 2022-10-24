@@ -1,13 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-const GetTiming = (stateChangeFunc) => {
+const GetTiming = (currState, stateChangeFunc, isPass) => {
     const dateTime = new Date();
-    let millisecond = dateTime.getMilliseconds();
-    let minute = dateTime.getMinutes();
-    console.log(minute, millisecond);
     let currentKey = 0;
-
-    console.log("exec")
 
     useEffect(() => {
         if (localStorage.getItem("keyVal") == null) {
@@ -16,9 +11,8 @@ const GetTiming = (stateChangeFunc) => {
             currentKey = localStorage.getItem("keyVal");
             localStorage.setItem("keyVal", ++currentKey);
         }
-        localStorage.setItem(++currentKey, JSON.stringify({minute, millisecond}));
-        console.log(JSON.parse(localStorage.getItem(currentKey)));
-    })
+        localStorage.setItem(++currentKey, JSON.stringify({dateTime, currState, isPass}));
+    }, [currState])
 
     return function (e) {
         stateChangeFunc(e.target.value)
