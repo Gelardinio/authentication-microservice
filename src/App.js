@@ -6,6 +6,7 @@ import GetTiming from './Functions/keystrokeTiming';
 import GetCursorTiming from './Functions/cursorTiming';
 import SubmitButton from './Components/submitButton';
 import SubmitFunc from './Functions/submitButtonFunc';
+import { InfoObtain } from './Functions/browserInfo';
 
 function App() {
 
@@ -13,8 +14,9 @@ function App() {
   const [password, setPassword] = useState("");
   const [mouseMove, setMouseMove] = useState([]);
   const [keyTrack, setKeyTrack] = useState([]);
+  const [BrowserInfo, setBrowserInfo] = useState({});
 
-  //Need to fix rerender issues with onChange
+  InfoObtain(BrowserInfo, setBrowserInfo);
 
   return (
     <div className="App" onMouseMove={GetCursorTiming(mouseMove, setMouseMove)}>
