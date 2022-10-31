@@ -12,6 +12,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mouseMove, setMouseMove] = useState([]);
+  const [keyTrack, setKeyTrack] = useState([]);
 
   //Need to fix rerender issues with onChange
 
@@ -19,9 +20,9 @@ function App() {
     <div className="App" onMouseMove={GetCursorTiming(mouseMove, setMouseMove)}>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <LoginInput placeholder="Username"  onChange={GetTiming(username, setUsername, false)}/>
-        <LoginInput placeholder="Password" onChange={GetTiming(password, setPassword, true)}/>
-        <SubmitButton onClick={SubmitFunc(mouseMove)}/>
+        <LoginInput placeholder="Username"  onChange={GetTiming(username, setUsername, setKeyTrack, false)}/>
+        <LoginInput placeholder="Password" onChange={GetTiming(password, setPassword, setKeyTrack, true)}/>
+        <SubmitButton onClick={async () => SubmitFunc(username, password, mouseMove, keyTrack)}/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
