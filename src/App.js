@@ -6,7 +6,7 @@ import GetTiming from './Functions/keystrokeTiming';
 import GetCursorTiming from './Functions/cursorTiming';
 import SubmitButton from './Components/submitButton';
 import SubmitFunc from './Functions/submitButtonFunc';
-import { InfoObtain } from './Functions/browserInfo';
+import { InfoObtain, GetIp } from './Functions/browserInfo';
 
 function App() {
 
@@ -15,8 +15,10 @@ function App() {
   const [mouseMove, setMouseMove] = useState([]);
   const [keyTrack, setKeyTrack] = useState([]);
   const [BrowserInfo, setBrowserInfo] = useState({});
+  const [ip, setIp] = useState(false);
 
   InfoObtain(BrowserInfo, setBrowserInfo);
+  GetIp(BrowserInfo, setBrowserInfo, ip, setIp);
 
   return (
     <div className="App" onMouseMove={GetCursorTiming(mouseMove, setMouseMove)}>
@@ -24,7 +26,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <LoginInput placeholder="Username"  onChange={GetTiming(username, setUsername, setKeyTrack, false)}/>
         <LoginInput placeholder="Password" onChange={GetTiming(password, setPassword, setKeyTrack, true)}/>
-        <SubmitButton onClick={async () => SubmitFunc(username, password, mouseMove, keyTrack)}/>
+        <SubmitButton onClick={async () => SubmitFunc(username, password, mouseMove, keyTrack, BrowserInfo)}/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>

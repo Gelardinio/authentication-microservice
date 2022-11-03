@@ -1,3 +1,5 @@
+import json
+
 class Node:
     def __init__(self, val = None, next = None):
         self.val = val
@@ -8,4 +10,6 @@ class Graph:
         self.head = head
 
 def parseFunc(inputData):
+    json.dumps(inputData)
+    #print((json.loads(inputData['browserInfo'])))
     return 1
