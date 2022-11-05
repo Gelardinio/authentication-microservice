@@ -10,6 +10,5 @@ class Graph:
         self.head = head
 
 def parseFunc(inputData):
-    json.dumps(inputData)
-    #print((json.loads(inputData['browserInfo'])))
+    print(inputData['browser'])
     return 1

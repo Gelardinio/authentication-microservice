@@ -11,7 +11,7 @@ def home():
 
 @app.route("/submit", methods=['POST'])
 def submit():
-    submitRes = request.get_json()
+    submitRes = request.json
     parseFunc(submitRes)
     return "", 201
 

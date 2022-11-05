@@ -2,21 +2,19 @@ import { useEffect } from 'react';
 import axios from 'axios'
 import Bowser from "bowser";
 
-const InfoObtain = (browserInfo, setBrowserInfo) => {
-    useEffect(() => {
-        setBrowserInfo(Bowser.parse(window.navigator.userAgent));
-    }, [])
+const TempSet = async (browserInfo, setBrowserInfo) => {
+    const temp = Bowser.parse(window.navigator.userAgent)
+    return temp
+}
+
+const InfoObtain = async (browserInfo, setBrowserInfo) => {
+    return TempSet(browserInfo, setBrowserInfo)
 }   
 
-const GetIp = async (browserInfo, setBrowserInfo, ipFetched, ipUpdateFetch) => {
-    if(!ipFetched) {
-        const res = await axios.get('http://ip-api.com/json') 
-        let temp = browserInfo
-        temp['ip'] = res.data 
-        setBrowserInfo(temp);
-        ipUpdateFetch(true);
-        console.log(temp)
-    } 
+const GetIp = async (browserInfo, setBrowserInfo, currState) => {
+    const res = await axios.get('http://ip-api.com/json') 
+    currState['ip'] = res.data 
+    setBrowserInfo(currState);
 }
 
 export { InfoObtain, GetIp } 

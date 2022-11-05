@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import LoginInput from './Components/logincInput';
@@ -15,10 +15,12 @@ function App() {
   const [mouseMove, setMouseMove] = useState([]);
   const [keyTrack, setKeyTrack] = useState([]);
   const [BrowserInfo, setBrowserInfo] = useState({});
-  const [ip, setIp] = useState(false);
 
-  InfoObtain(BrowserInfo, setBrowserInfo);
-  GetIp(BrowserInfo, setBrowserInfo, ip, setIp);
+  useEffect(() => {
+    InfoObtain(BrowserInfo, setBrowserInfo).then(res => {
+      GetIp(BrowserInfo, setBrowserInfo, res);
+    });
+  }, [])
 
   return (
     <div className="App" onMouseMove={GetCursorTiming(mouseMove, setMouseMove)}>
