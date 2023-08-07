@@ -1,7 +1,3 @@
-//const styles = StyleSheet.create({
-
-//});
-
 const LoginInput = (props) => {
     return (
         <div>

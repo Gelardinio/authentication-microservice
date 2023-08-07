@@ -1,18 +1,21 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import comparisonFunctions
+
+client = comparisonFunctions.connectMongoDb()
+
+if not client:
+    print("Failed to connect to MongoDB!")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  
 
-@app.route("/")
-def home():
-    return "Home Page"
+@app.route('/submit', methods=['POST'])
+def submit_data():
+    data = request.get_json()
+    comparisonFunctions.compareBrowserData(data['browserData'])
+    comparisonFunctions.processMouseNodes(data)
+    return jsonify({'message': 'Data received successfully'})
 
-@app.route("/submit", methods=['POST'])
-def submit():
-    submitRes = request.get_json()
-    print(submitRes)
-    return "", 201
-
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run()
