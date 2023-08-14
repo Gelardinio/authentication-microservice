@@ -25,16 +25,18 @@ func SubmitData(w http.ResponseWriter, r *http.Request) {
 	var data []graph.CursorPosition
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		http.Error(w, "Invalid ", http.StatusBadRequest)
 		return
 	}
 
 	graphData := graph.MakeGraph(data)
 	graph.CreateDensityHeatMap(graphData)
 	exportedData := graph.ExportNeighbourDensity(graphData)
+	graphDetails := graph.CalculateGraphDetails(graphData)
 
 	response := map[string]interface{}{
 		"exportedData": exportedData,
+		"graphDetails": graphDetails,
 	}
 
 	json.NewEncoder(w).Encode(response)

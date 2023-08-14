@@ -13,8 +13,8 @@ export default async function getUserBrowserData() {
       });
       const { latitude, longitude } = position.coords;
       geolocation = { latitude, longitude };
-    } catch (error) {
-      console.error('Geolocation Error:', error.message);
+    } catch (e) {
+      console.error('Error:', e.message);
     }
   }
 
@@ -30,8 +30,8 @@ export default async function getUserBrowserData() {
     const response = await fetch('https://api.ipify.org?format=json');
     const data = await response.json();
     ip = data.ip;
-  } catch (error) {
-    console.error('Failed to fetch IP address:', error.message);
+  } catch (e) {
+    console.error('Error :', e.message);
   }
 
   return {

@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"fmt"
 	"math"
 	"image"
 	"image/color"
@@ -36,6 +37,20 @@ type Node struct {
 	Neighbours []*Node
 }
 
+type GraphStatistics struct {
+	TotalNodes           int
+	AverageVelocity      float64
+	MaxVelocityNodeIndex int
+	MinVelocityNodeIndex int
+	MaxVelocity          float64
+	MinVelocity          float64
+	AverageNeighbors     float64
+	MaxNeighborsNodeIndex int
+	MinNeighborsNodeIndex int
+	StandardDeviation     float64
+	AverageAutoCorrelation 	  float64
+}
+
 func calculateVector(p1, p2 CursorPosition) VelocityVector {
 	timeDifference := float64((p2.Hours-p1.Hours)*3600000 + (p2.Minutes-p1.Minutes)*60000 + (p2.Seconds-p1.Seconds)*1000 + (p2.Milliseconds - p1.Milliseconds))
 	xDistance := float64(p2.ClientX - p1.ClientX)
@@ -48,13 +63,21 @@ func calculateVector(p1, p2 CursorPosition) VelocityVector {
 }
 
 func MakeGraph(points []CursorPosition) []*Node {
-	nodes := make([]*Node, len(points))
 
-	for i, p := range points {
-		nodes[i] = &Node{
+	nodes := []*Node{}
+	uniqueProperties := map[string]bool{}
+
+	for _, p := range points {
+		propertyKey := fmt.Sprintf("%d:%d", p.ClientX, p.ClientY)
+
+		if uniqueProperties[propertyKey] {
+			continue
+		}
+		nodes = append(nodes, &Node{
 			Properties: p,
 			Velocity:   VelocityVector{},
-		}
+		})
+		uniqueProperties[propertyKey] = true
 	}
 
 	for i := 1; i < len(nodes); i++ {
@@ -160,4 +183,112 @@ func ExportNeighbourDensity(nodes []*Node) [][]int {
 		data[i][2] = len(nodes[i].Neighbours)
 	}
 	return data
+}
+
+func calcAutocorrelation(speed []float64, lag int) float64 {
+	n := len(speed)
+
+	numerator := 0.0
+	denominator := 0.0 
+
+	for i := 3; i < n - lag; i++ {
+		numerator += (speed[i]) * (speed[i + lag])
+		denominator += (speed[i]) * (speed[i])
+	}
+
+	return numerator / denominator 
+}
+
+func calcMean(speed []float64) float64 {
+	sum := 0.0
+	for _, val := range speed {
+		sum += val
+	}
+	return sum / float64(len(speed))
+}
+
+func CalculateGraphDetails(nodes []*Node) GraphStatistics {
+	var totalNeighbors int
+	var maxVelocityNodeIndex, minVelocityNodeIndex int
+	var maxVelocity, minVelocity, averageVelocity, totalVelocity float64
+	var maxNeighborsNodeIndex, minNeighborsNodeIndex int
+	var maxVelocityValue, minVelocityValue float64
+	var maxNeighborsCount, minNeighborsCount int
+
+	var squaredDifferencesSum float64
+
+	totalVelocity = 0.0;
+	totalNeighbors = 0;
+
+	speeds := make([]float64, 0)
+
+	for i, node := range nodes {
+		speed := node.Velocity.Speed
+		totalVelocity += speed
+		totalNeighbors += len(node.Neighbours)
+
+		speeds = append(speeds, speed)
+
+		if speed > maxVelocityValue {
+			maxVelocityValue = speed
+			maxVelocityNodeIndex = i
+		}
+
+		if minVelocityNodeIndex == 0 || speed < minVelocityValue {
+			minVelocityValue = speed
+			minVelocityNodeIndex = i
+		}
+
+		if speed > maxVelocity {
+			maxVelocity = speed
+		}
+
+		if minVelocityNodeIndex == 0 || speed < minVelocity {
+			minVelocity = speed
+		}
+
+		if len(node.Neighbours) > maxNeighborsCount {
+			maxNeighborsCount = len(node.Neighbours)
+			maxNeighborsNodeIndex = i
+		}
+
+		if minNeighborsNodeIndex == 0 || len(node.Neighbours) < minNeighborsCount {
+			minNeighborsCount = len(node.Neighbours)
+			minNeighborsNodeIndex = i
+		}
+
+		averageVelocity = totalVelocity / float64(len(nodes))
+
+		squaredDifferencesSum += math.Pow(speed-averageVelocity, 2)
+	}
+
+	lagUpperBound := int(float64(len(speeds)) * 0.9)
+
+	autoCorrelation := make([]float64, lagUpperBound)
+
+	AverageAutoCorrelation := 0.0
+
+	for lag := 0; lag < lagUpperBound; lag++ {
+		autoCorrelation[lag] = calcAutocorrelation(speeds, lag)
+		AverageAutoCorrelation += autoCorrelation[lag] 
+	}
+
+	AverageAutoCorrelation = AverageAutoCorrelation / float64(lagUpperBound)
+
+	averageNeighbors := float64(totalNeighbors) / float64(len(nodes))
+	standardDeviation := math.Sqrt(squaredDifferencesSum / float64(len(nodes)))
+
+	return GraphStatistics{
+		TotalNodes:           len(nodes),
+		AverageVelocity:      math.Round(averageVelocity*1e5) / 1e5,
+		MaxVelocityNodeIndex: maxVelocityNodeIndex,
+		MinVelocityNodeIndex: minVelocityNodeIndex,
+		MaxVelocity:          math.Round(maxVelocity*1e5) / 1e5,
+		MinVelocity:          math.Round(minVelocity*1e5) / 1e5,
+		AverageNeighbors:     math.Round(averageNeighbors*1e5) / 1e5,
+		MaxNeighborsNodeIndex: maxNeighborsNodeIndex,
+		MinNeighborsNodeIndex: minNeighborsNodeIndex,
+		StandardDeviation:    math.Round(standardDeviation*1e5) / 1e5,
+		AverageAutoCorrelation:    math.Round(AverageAutoCorrelation*1e5) / 1e5,
+	}
 }

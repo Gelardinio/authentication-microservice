@@ -28,7 +28,12 @@ const SubmitFunc = async (username, password, mouseMove, keyTrackUser, keyTrackP
         //const response = await axios.post(url, sendData, { headers });
         const response2 = await axios.post(url2, mouseMove, { headers });
         moveData = response2.data.exportedData;
-        return moveData;
+        const graphDetails = response2.data.graphDetails;
+        return {
+            data: moveData,
+            graphDetails: graphDetails,
+            browserData: browserData,
+        }
     } catch (e) {
         console.error(e);
     }

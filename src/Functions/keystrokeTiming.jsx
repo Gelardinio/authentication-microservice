@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 const GetTiming = (currState, stateChangeFunc, keyTrackFunc, isPass) => {
     return function (e) {
         stateChangeFunc(e.target.value)
