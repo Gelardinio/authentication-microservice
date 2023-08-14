@@ -1,41 +1,17 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import LoginInput from './Components/logincInput';
-import GetTiming from './Functions/keystrokeTiming';
-import GetCursorTiming from './Functions/cursorTiming';
-import SubmitButton from './Components/submitButton';
-import SubmitFunc from './Functions/submitButtonFunc';
+import LoginPage from './Containers/Login';
+import TitleBar from './Containers/MainScreen';
 
 function App() {
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [mouseMove, setMouseMove] = useState([]);
-  const [keyTrack, setKeyTrack] = useState([]);
-
-  //Need to fix rerender issues with onChange
-
   return (
-    <div className="App" onMouseMove={GetCursorTiming(mouseMove, setMouseMove)}>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <LoginInput placeholder="Username"  onChange={GetTiming(username, setUsername, setKeyTrack, false)}/>
-        <LoginInput placeholder="Password" onChange={GetTiming(password, setPassword, setKeyTrack, true)}/>
-        <SubmitButton onClick={async () => SubmitFunc(username, password, mouseMove, keyTrack)}/>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/mainPage" element={<TitleBar />} />
+      </Routes>
+    </Router>
   );
 }
 

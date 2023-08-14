@@ -1,8 +1,14 @@
 const GetCursorTiming = (positionArr, changePosition) => {
-    const dateTime = new Date();
 
     return function (e) {
-        changePosition([...positionArr, [e.clientX, e.clientY, dateTime]])
+        const currentTime = new Date();
+        const hours = currentTime.getHours();
+        const minutes = currentTime.getMinutes();
+        const seconds = currentTime.getSeconds();
+        const milliseconds = currentTime.getMilliseconds();
+        
+        const { clientX, clientY } = e;
+        changePosition([...positionArr, { clientX, clientY, hours, minutes, seconds, milliseconds }]);
     }
 };
 
